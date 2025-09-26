@@ -8,31 +8,48 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await axios.post(
-        'https://apitest.softvencefsd.xyz/api/login',
-        {
-          email,
-          password,
-        }
-      );
+  if (formData.password !== formData.confirmPassword) {
+    alert("❌ Passwords do not match!");
+    return;
+  }
 
-      console.log('Login success:', response.data);
+  try {
+    const form = new FormData();
+    form.append("first_name", formData.firstName);
+    form.append("last_name", formData.lastName);
+    form.append("email", formData.email);
+    form.append("password", formData.password);
+    form.append("password_confirmation", formData.confirmPassword);
+    form.append("terms", formData.agreeToTerms ? "true" : "false");
 
-      // store token for later use
-      localStorage.setItem('token', response.data.token);
+    const response = await fetch(
+      "https://apitest.softvencefsd.xyz/api/register",
+      {
+        method: "POST",
+        body: form,
+      }
+    );
 
-      alert('Login successful!');
-      // redirect to dashboard/home...............................
-      window.location.href = '/dashboard';
-    } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
-      alert(error.response?.data?.message || 'Login failed!');
+    const data = await response.json();
+    console.log("API Response:", data); // ✅ এখানে console message
+
+    if (response.ok) {
+      console.log("🎉 Registration successful!"); // ✅ console message
+      alert("✅ Registration successful!"); // ✅ alert message
+      navigate("/success"); // success page এ নেভিগেট করবে
+    } else {
+      alert("❌ " + (data.message || "Registration failed"));
+      console.error("Registration failed:", data);
     }
-  };
+  } catch (error) {
+    console.error("Error:", error);
+    alert("⚠️ Something went wrong. Please try again later.");
+  }
+};
+
 
   const handleGoogleLogin = () => {
     console.log('Logging in with Google...');
@@ -46,7 +63,7 @@ const LoginPage = () => {
           Please share your login details so you can access the website.
         </p>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit}>
           {/* Email */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-semibold mb-1" htmlFor="email">
