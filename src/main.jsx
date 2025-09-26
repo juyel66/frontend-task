@@ -1,3 +1,4 @@
+// main.jsx
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
@@ -11,41 +12,44 @@ import ForgotPassword from "./Authentation/ForgotPassword";
 import EmailVerification from "./Authentation/EmailVerification";
 import AccountSuccessPage from "./Authentation/AccountSuccessPage";
 
+// Success এর জন্য আলাদা layout (Navbar/Footer ছাড়া)
+const SuccessLayout = () => <AccountSuccessPage />;
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root></Root>,
+    element: <Root />,
     children: [
-
-       {
+      {
         path: "/",
-        element: <App></App>,
+        element: <App />,
       },
       {
         path: "/login",
         element: <Login />,
       },
-          {
+      {
         path: "/register",
-        element:<RegisterForm></RegisterForm>,
+        element: <RegisterForm />,
       },
-            {
+      {
         path: "/password",
-       element:<ForgotPassword></ForgotPassword>
+        element: <ForgotPassword />,
       },
-              {
+      {
         path: "/emailverification",
-       element:<EmailVerification></EmailVerification>
+        element: <EmailVerification />,
       },
-       {
+      {
         path: "/emailverificationpage",
-       element:<EmailVerificationPage></EmailVerificationPage>
-      },
-       {
-        path: "/success",
-       element:<AccountSuccessPage></AccountSuccessPage>
+        element: <EmailVerificationPage />,
       },
     ],
+  },
+  // Success route Root এর বাইরে থাকবে
+  {
+    path: "/success",
+    element: <SuccessLayout />,
   },
 ]);
 
